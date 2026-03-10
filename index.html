@@ -507,7 +507,12 @@ function renderAll(){
   const active=['sched','mine','admin'].find(t=>document.getElementById('page-'+t).classList.contains('active'))||'sched';
   if(active==='sched') renderSched();
   else if(active==='mine'){ if(S.selSoldier) showDetail(S.selSoldier); else renderMine(); }
-  else if(active==='admin') renderAdmin();
+  else if(active==='admin'){
+    // אל תרענן אם המשתמש באמצע הקלדה בשדה הורדה
+    const focused=document.activeElement;
+    const editingRemoval=focused&&focused.closest&&focused.closest('.rm-row');
+    if(!editingRemoval) renderAdmin();
+  }
 }
 
 function renderSched(){
@@ -661,10 +666,15 @@ function renderRemovals(){
       </div>
       <button class="btn btn-red btn-sm del-removal" data-id="${r.id}" style="align-self:flex-end">✕</button>
     </div>`).join('');
-  document.querySelectorAll('[data-rid]').forEach(el=>{
-    el.addEventListener('change',()=>{
-      const r=S.removals.find(x=>x.id===parseInt(el.dataset.rid));
-      if(r){ r[el.dataset.field]=el.value; save(); }
+  document.querySelectorAll('[data-rid]').forEach(input=>{
+    // שמור מיד בכל שינוי — לפני שFirebase יספיק לרענן
+    input.addEventListener('change',()=>{
+      const r=S.removals.find(x=>x.id===parseInt(input.dataset.rid));
+      if(r){
+        r[input.dataset.field]=input.value;
+        save();
+        toast('✓ נשמר');
+      }
     });
   });
   document.querySelectorAll('.del-removal').forEach(btn=>btn.addEventListener('click',()=>delRemoval(parseInt(btn.dataset.id))));
