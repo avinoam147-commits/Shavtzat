@@ -510,18 +510,21 @@ function buildSchedule(startMs, endMs, keptSchedule){
   let id = schedule.length ? Math.max(...schedule.map(x=>x.id))+1 : 1;
 
   while(t < endMs){
-    // אסוף P חיילים מהתור, דלג על נעדרים
+    // אסוף P חיילים זמינים מהתור
+    // ממשיך לחפש בתור עד שמוצא P זמינים — גם אם יש כמה נעדרים בו-זמנית
     const slotSoldiers=[];
-    for(let step=0; step<P; step++){
+    let step=0;
+    while(slotSoldiers.length < P && step < N){
       const idx = (queuePos + step) % N;
       const s   = S.soldiers[idx];
       if(!isAbsent(s.name, t)){
         slotSoldiers.push({idx, soldier:s});
       }
+      step++;
     }
 
     if(slotSoldiers.length === 0){
-      // כולם נעדרים בסלוט זה — קדם זמן ותור
+      // כולם נעדרים — דלג שעה
       queuePos += P;
       t += Math.max(...S.posts.map(p=>p.hours)) * 3600000;
       slotNum++;
