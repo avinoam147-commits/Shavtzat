@@ -20,11 +20,11 @@ header{flex-shrink:0;display:flex;align-items:center;justify-content:space-betwe
 .clock-pill{background:var(--s2);border:1px solid var(--border2);border-radius:20px;padding:5px 12px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--g);display:flex;align-items:center;gap:6px;}
 .clock-dot{width:5px;height:5px;background:var(--g);border-radius:50%;animation:blink 1s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-#adminBtn{background:transparent;border:1px solid var(--border2);color:var(--dim);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:12px;font-weight:700;transition:all .2s;display:flex;align-items:center;gap:5px;}
+#adminBtn{background:transparent;border:1px solid var(--border2);color:var(--dim);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:12px;font-weight:700;transition:all .2s;}
 #adminBtn:hover{border-color:var(--g);color:var(--g);}
 #adminBtn.on{background:var(--g);border-color:var(--g);color:var(--bg);}
 nav{flex-shrink:0;display:flex;background:var(--s1);border-bottom:1px solid var(--border);padding:0 12px;z-index:10;overflow-x:auto;}
-.tab{padding:11px 14px;font-size:13px;font-weight:700;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+.tab{padding:11px 14px;font-size:13px;font-weight:700;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;}
 .tab:hover{color:var(--text);}
 .tab.active{color:var(--g);border-bottom-color:var(--g);}
 main{flex:1;overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
@@ -33,7 +33,7 @@ main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
 .page{display:none;}.page.active{display:block;}
 .card{background:var(--s1);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px;}
 .card-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.card-title{font-size:13px;font-weight:800;display:flex;align-items:center;gap:7px;}
+.card-title{font-size:13px;font-weight:800;}
 .card-body{padding:16px;}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -105,7 +105,7 @@ select option{background:var(--s2);}
 .empty{text-align:center;padding:36px 16px;color:var(--dim);}
 .empty-icon{font-size:32px;margin-bottom:9px;opacity:.4;}
 .empty p{font-size:13px;}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
 .modal{background:var(--s1);border:1px solid var(--border2);border-radius:14px;padding:24px;width:100%;max-width:360px;animation:pop .2s ease;}
 @keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
 .modal h2{font-size:18px;font-weight:800;margin-bottom:5px;}
@@ -115,9 +115,8 @@ select option{background:var(--s2);}
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--s2);border:1px solid var(--g);color:var(--g);padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;z-index:9999;transition:transform .3s;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .mb-3{margin-bottom:10px;}.mb-4{margin-bottom:14px;}
-.flex{display:flex;}.gap-2{gap:8px;}.items-c{align-items:center;}.jc-sb{justify-content:space-between;}
 .hidden{display:none!important;}
-.mono{font-family:'IBM Plex Mono',monospace;}.dim{color:var(--dim);}.small{font-size:11px;}.bold{font-weight:700;}
+.dim{color:var(--dim);}.small{font-size:11px;}.mono{font-family:'IBM Plex Mono',monospace;}
 </style>
 </head>
 <body>
@@ -143,7 +142,8 @@ select option{background:var(--s2);}
 </nav>
 
 <main>
-  <!-- SCHEDULE -->
+
+  <!-- ══ SCHEDULE ══ -->
   <div class="page active" id="page-sched">
     <div id="sched-empty" class="empty">
       <div class="empty-icon">⏳</div><p>מתחבר לשרת...</p>
@@ -168,14 +168,14 @@ select option{background:var(--s2);}
     </div>
   </div>
 
-  <!-- MY SHIFTS -->
+  <!-- ══ MY SHIFTS ══ -->
   <div class="page" id="page-mine">
     <div id="mine-picker">
       <p class="dim small mb-3">בחר את השם שלך:</p>
       <div class="picker-grid" id="pickerGrid"></div>
     </div>
     <div id="mine-detail" class="hidden">
-      <div class="flex items-c jc-sb mb-4">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
         <div>
           <div style="font-size:17px;font-weight:800" id="detailName"></div>
           <div class="dim small" id="detailStats"></div>
@@ -191,29 +191,32 @@ select option{background:var(--s2);}
     </div>
   </div>
 
-  <!-- ADMIN -->
+  <!-- ══ ADMIN ══ -->
   <div class="page" id="page-admin">
+
     <div class="g2 mb-4">
+      <!-- חיילים -->
       <div class="card" style="margin-bottom:0">
         <div class="card-head">
           <div class="card-title">👥 חיילים</div>
-          <span class="dim small" id="soldierCount">0 חיילים</span>
+          <span class="dim small" id="soldierCount"></span>
         </div>
         <div class="card-body">
-          <div class="flex gap-2 mb-3">
+          <div style="display:flex;gap:8px;margin-bottom:10px">
             <input id="newSoldier" placeholder="שם החייל...">
             <button class="btn btn-g" id="addSoldierBtn" style="white-space:nowrap">+ הוסף</button>
           </div>
           <div class="chip-list" id="soldierList"></div>
         </div>
       </div>
+      <!-- עמדות -->
       <div class="card" style="margin-bottom:0">
         <div class="card-head">
           <div class="card-title">🏛 עמדות</div>
-          <span class="dim small" id="postCount">0 עמדות</span>
+          <span class="dim small" id="postCount"></span>
         </div>
         <div class="card-body">
-          <div class="flex gap-2 mb-3" style="align-items:flex-end">
+          <div style="display:flex;gap:8px;margin-bottom:10px;align-items:flex-end">
             <div style="flex:1"><label class="lbl">שם</label><input id="newPostName" placeholder="שם עמדה..."></div>
             <div style="width:65px"><label class="lbl">שעות</label><input id="newPostHours" type="number" value="1" min="0.5" max="12" step="0.5"></div>
             <button class="btn btn-g" id="addPostBtn" style="white-space:nowrap">+ הוסף</button>
@@ -222,33 +225,41 @@ select option{background:var(--s2);}
         </div>
       </div>
     </div>
+
+    <!-- הגדרות לוח -->
     <div class="card">
       <div class="card-head"><div class="card-title">⚙️ הגדרות לוח</div></div>
       <div class="card-body">
         <div class="g2 mb-3">
           <div><label class="lbl">תאריך ושעת התחלה</label><input type="datetime-local" id="startDt"></div>
-          <div><label class="lbl">מספר ימים ללוח</label><input type="number" id="schedDays" value="7" min="1" max="60"></div>
+          <div><label class="lbl">מספר ימים</label><input type="number" id="schedDays" value="7" min="1" max="60"></div>
         </div>
         <button class="btn btn-g btn-full" id="generateBtn">🚀 צור לוח שמירות</button>
       </div>
     </div>
+
+    <!-- הורדות -->
     <div class="card">
       <div class="card-head">
         <div class="card-title">⛔ הורדות מהשמירה</div>
         <button class="btn btn-ghost btn-sm" id="addRemovalBtn">+ הוסף</button>
       </div>
       <div class="card-body">
-        <p class="dim small mb-3">הגדר מי נעדר מתי — הלוח יתעדכן בעת יצירה מחדש.</p>
+        <p class="dim small mb-3">לאחר עדכון ההורדות לחץ "עדכן לוח" כדי לחשב מחדש.</p>
         <div id="removalList"></div>
       </div>
     </div>
-    <div id="regenWrap" class="hidden mb-4">
+
+    <!-- כפתורי פעולה — תמיד גלויים למנהל -->
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
       <button class="btn btn-orange btn-full" id="regenBtn">🔄 עדכן לוח (שמור שמירות שעברו)</button>
+      <button class="btn btn-full" style="background:#1c2030;border:1px solid #f44336;color:#f44336" id="resetBtn">🗑 איפוס מלא</button>
     </div>
+
   </div>
 </main>
 
-<!-- MODAL LOGIN -->
+<!-- modal סיסמה -->
 <div class="overlay hidden" id="modalLogin">
   <div class="modal">
     <h2>🔐 כניסה לניהול</h2>
@@ -262,9 +273,20 @@ select option{background:var(--s2);}
   </div>
 </div>
 
+<!-- modal איפוס -->
+<div class="overlay hidden" id="modalReset">
+  <div class="modal">
+    <h2>🗑 איפוס מלא</h2>
+    <p>זה ימחק את כל החיילים, העמדות, הלוח וההורדות — לכל המכשירים. אי אפשר לבטל.</p>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" id="cancelResetBtn">ביטול</button>
+      <button class="btn btn-red" id="confirmResetBtn">כן, אפס הכל</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -278,60 +300,59 @@ const app = initializeApp({
   messagingSenderId:"920956297431",
   appId:"1:920956297431:web:ea975248b8acd1ecf25092"
 });
-const db = getDatabase(app);
-const DB = ref(db, 'shavatz');
+const db  = getDatabase(app);
+const DB  = ref(db, 'shavatz');
+const PW  = 'A147';
 
 // ══════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════
-const PW = 'A147';
-let S = { isAdmin:false, soldiers:[], posts:[], schedule:[], removals:[], cfg:{startDt:'',days:7}, selSoldier:null, reminders:{} };
+let S = {
+  isAdmin:false,
+  soldiers:[], posts:[], schedule:[], removals:[],
+  cfg:{startDt:'',days:7},
+  selSoldier:null,
+  reminders:{}
+};
 let fbReady = false;
 
 function fix(){
-  if(!Array.isArray(S.soldiers)) S.soldiers=[];
-  if(!Array.isArray(S.posts))    S.posts=[];
-  if(!Array.isArray(S.schedule)) S.schedule=[];
-  if(!Array.isArray(S.removals)) S.removals=[];
+  ['soldiers','posts','schedule','removals'].forEach(k=>{ if(!Array.isArray(S[k])) S[k]=[]; });
   if(!S.reminders) S.reminders={};
   if(!S.cfg) S.cfg={startDt:'',days:7};
 }
 
+// ── שמירה ──
 function save(){
   const d={soldiers:S.soldiers,posts:S.posts,schedule:S.schedule,removals:S.removals,cfg:S.cfg};
-  set(DB,d).catch(e=>toast('⚠️ שגיאת שמירה: '+e.message));
+  set(DB,d).catch(e=>toast('⚠️ שגיאת שמירה'));
   localStorage.setItem('shavatz_bk',JSON.stringify(d));
 }
 
-// Load backup immediately
+// ── טעינה ראשונית מ-localStorage (מיידית) ──
 try{
   const bk=localStorage.getItem('shavatz_bk');
-  if(bk){const d=JSON.parse(bk);Object.assign(S,d);fix();}
+  if(bk){ Object.assign(S,JSON.parse(bk)); fix(); }
 }catch(e){}
 
-// Firebase real-time listener
+// ── Firebase real-time ──
 onValue(DB, snap=>{
   const d=snap.val();
   if(d){
     S.soldiers=d.soldiers||[];
-    S.posts=d.posts||[];
+    S.posts   =d.posts   ||[];
     S.schedule=d.schedule||[];
     S.removals=d.removals||[];
-    S.cfg=d.cfg||{startDt:'',days:7};
+    S.cfg     =d.cfg     ||{startDt:'',days:7};
     fix();
     localStorage.setItem('shavatz_bk',JSON.stringify(d));
   }
-  if(!fbReady){
-    fbReady=true;
-    renderAll();
-    restoreReminders();
-  } else {
-    renderAll();
-  }
-}, err=>{ toast('⚠️ בעיית חיבור'); renderAll(); });
+  if(!fbReady){ fbReady=true; renderAll(); restoreReminders(); }
+  else { renderAll(); }
+}, ()=>{ toast('⚠️ בעיית חיבור'); renderAll(); });
 
 // ══════════════════════════════════════════════
-//  CLOCK
+//  CLOCK — Israel Time
 // ══════════════════════════════════════════════
 function tickClock(){
   try{
@@ -348,15 +369,16 @@ const pending={};
 async function reqNotif(){
   if(!('Notification' in window)) return false;
   if(Notification.permission==='granted') return true;
-  if(Notification.permission==='denied') return false;
+  if(Notification.permission==='denied')  return false;
   return (await Notification.requestPermission())==='granted';
 }
 function schedNotif(sh){
   const delay=sh.start-Date.now()-30*60*1000;
   if(delay<-60000) return;
   pending[sh.id]=setTimeout(()=>{
-    new Notification('🛡 שמירה בקרוב — '+sh.postName,{body:'מתחילה ב-'+ft(sh.start)+' (עוד ~30 דקות)',tag:'s'+sh.id});
-  },Math.max(0,delay));
+    new Notification('🛡 שמירה בקרוב — '+sh.postName,
+      {body:'מתחילה ב-'+ft(sh.start)+' (עוד ~30 דקות)',tag:'s'+sh.id});
+  }, Math.max(0,delay));
 }
 function restoreReminders(){
   S.schedule.forEach(sh=>{ if(S.reminders[sh.id]&&sh.start>Date.now()) schedNotif(sh); });
@@ -367,13 +389,12 @@ function toggleReminder(id){
   if(S.reminders[id]){
     if(pending[id]){ clearTimeout(pending[id]); delete pending[id]; }
     delete S.reminders[id];
-    toast('תזכורת בוטלה'); renderAll();
-    return;
+    toast('תזכורת בוטלה'); renderMineActive(); return;
   }
   reqNotif().then(ok=>{
     if(!ok){ toast('אפשר התראות בדפדפן'); return; }
     S.reminders[id]=true;
-    schedNotif(sh); toast('🔔 תזכורת הוגדרה'); renderAll();
+    schedNotif(sh); toast('🔔 תזכורת הוגדרה'); renderMineActive();
   });
 }
 
@@ -383,7 +404,9 @@ function toggleReminder(id){
 function goTab(t){
   document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===t));
   ['sched','mine','admin'].forEach(x=>document.getElementById('page-'+x).classList.toggle('active',x===t));
-  renderAll();
+  if(t==='sched') renderSched();
+  if(t==='mine')  renderMine();
+  if(t==='admin') renderAdmin();
 }
 
 // ══════════════════════════════════════════════
@@ -414,9 +437,8 @@ function addSoldier(){
   S.soldiers.push({id:Date.now(),name:n});
   el.value=''; save(); renderAdmin(); toast(n+' נוסף');
 }
-function delSoldier(id){
-  S.soldiers=S.soldiers.filter(s=>s.id!==id); save(); renderAdmin();
-}
+function delSoldier(id){ S.soldiers=S.soldiers.filter(s=>s.id!==id); save(); renderAdmin(); }
+
 function addPost(){
   const n=document.getElementById('newPostName').value.trim();
   const h=parseFloat(document.getElementById('newPostHours').value)||1;
@@ -426,9 +448,7 @@ function addPost(){
   document.getElementById('newPostHours').value='1';
   save(); renderAdmin(); toast('עמדה "'+n+'" נוספה');
 }
-function delPost(id){
-  S.posts=S.posts.filter(p=>p.id!==id); save(); renderAdmin();
-}
+function delPost(id){ S.posts=S.posts.filter(p=>p.id!==id); save(); renderAdmin(); }
 
 // ══════════════════════════════════════════════
 //  REMOVALS
@@ -437,30 +457,32 @@ function addRemoval(){
   S.removals.push({id:Date.now(),soldierName:'',from:'',to:''});
   save(); renderRemovals();
 }
-function delRemoval(id){
-  S.removals=S.removals.filter(x=>x.id!==id); save(); renderRemovals();
+function delRemoval(id){ S.removals=S.removals.filter(x=>x.id!==id); save(); renderRemovals(); }
+
+// ══════════════════════════════════════════════
+//  RESET
+// ══════════════════════════════════════════════
+function resetAll(){
+  S.soldiers=[]; S.posts=[]; S.schedule=[]; S.removals=[];
+  S.cfg={startDt:'',days:7}; S.reminders={};
+  save();
+  localStorage.removeItem('shavatz_bk');
+  renderAdmin(); renderSched();
+  toast('✓ כל הנתונים נמחקו');
 }
 
 // ══════════════════════════════════════════════
 //  SCHEDULE GENERATION
 //
-//  לוגיקה:
-//  - רשימת כל החיילים קבועה (S.soldiers)
-//  - globalPtr מתקדם ב-P בכל סלוט — תמיד לפי הרשימה הקבועה
-//  - בתוך כל סלוט: לוקחים P חיילים החל מ-globalPtr, מדלגים על נעדרים
-//  - כך הסדר נשמר וכל חייל עובר עמדה בכל שמירה שלו
+//  לוגיקה נכונה:
+//  - queue גלובלי של חיילים לפי הסדר המקורי שלהם (S.soldiers)
+//  - בכל סלוט: לוקחים P חיילים הבאים בתור, מדלגים על נעדרים
+//  - הנעדר לא "תופס מקום" — כולם אחריו זוחלים קדימה בתורם
+//  - כל חייל מקבל עמדה לפי מספר הפעמים שכבר שמר (postOffset שלו)
+//  - בתוך סלוט: החייל ה-j מקבל (basePost+j)%P כדי שכולם בסלוט בעמדות שונות
 // ══════════════════════════════════════════════
-function generateSchedule(){
-  const dtEl=document.getElementById('startDt');
-  if(!dtEl.value){ toast('בחר תאריך התחלה'); return; }
-  if(!S.soldiers.length){ toast('הוסף חיילים קודם'); return; }
-  if(!S.posts.length){ toast('הוסף עמדות קודם'); return; }
-
-  S.cfg={startDt:dtEl.value, days:parseInt(document.getElementById('schedDays').value)||7};
-  const startMs=new Date(dtEl.value).getTime();
-  const endMs=startMs+S.cfg.days*86400000;
-  const P=S.posts.length;
-  const N=S.soldiers.length;
+function buildSchedule(startMs, endMs, keptSchedule){
+  const P=S.posts.length, N=S.soldiers.length;
 
   const rmv=S.removals.filter(r=>r.soldierName&&r.from).map(r=>({
     name:r.soldierName,
@@ -469,107 +491,142 @@ function generateSchedule(){
   }));
   const isAbsent=(name,t)=>rmv.some(r=>r.name===name&&t>=r.from&&t<r.to);
 
-  // שמור שמירות שכבר עברו
-  const now=Date.now();
-  const kept=S.schedule.filter(sh=>sh.end<=now);
-  const keptSlotCount=new Set(kept.map(x=>x.slotNum)).size;
+  const keptSlotCount = new Set(keptSchedule.map(x=>x.slotNum)).size;
 
-  let t=kept.length>0?Math.max(...kept.map(x=>x.end)):startMs;
-  let slotNum=keptSlotCount+1;
-
-  // globalPtr — כמה "צעדים" עשינו ברשימה הקבועה עד כה
-  // בכל סלוט: globalPtr מתקדם ב-P (גם אם חלק נעדרים)
-  let globalPtr=keptSlotCount*P;
-
-  // postOffset לכל חייל — כמה פעמים שמר (קובע איזו עמדה הוא מקבל)
-  const postOffset=new Array(N).fill(0);
-  kept.forEach(sh=>{
+  // postOffset: כמה פעמים כל חייל שמר עד כה (מתוך kept)
+  const postOffset = new Array(N).fill(0);
+  keptSchedule.forEach(sh=>{
     const idx=S.soldiers.findIndex(s=>s.name===sh.soldierName);
     if(idx>=0) postOffset[idx]++;
   });
 
-  const schedule=[...kept];
-  let id=schedule.length?Math.max(...schedule.map(x=>x.id))+1:1;
+  // queuePos: מאיזה מקום בתור מתחיל הסלוט הבא
+  // כל סלוט "מתקדם" P מקומות בתור (ללא קשר לנעדרים — הסדר נשמר)
+  let queuePos = keptSlotCount * P;
 
-  while(t<endMs){
-    // בחר P חיילים מהרשימה הקבועה החל מ-globalPtr, דלג על נעדרים
-    const slotAssigned=[];
+  let t = keptSchedule.length>0 ? Math.max(...keptSchedule.map(x=>x.end)) : startMs;
+  let slotNum = keptSlotCount + 1;
+  const schedule = [...keptSchedule];
+  let id = schedule.length ? Math.max(...schedule.map(x=>x.id))+1 : 1;
+
+  while(t < endMs){
+    // אסוף P חיילים מהתור, דלג על נעדרים
+    const slotSoldiers=[];
     for(let step=0; step<P; step++){
-      const baseIdx=(globalPtr+step)%N;
-      const soldier=S.soldiers[baseIdx];
-      if(!isAbsent(soldier.name,t)){
-        slotAssigned.push({idx:baseIdx, soldier});
+      const idx = (queuePos + step) % N;
+      const s   = S.soldiers[idx];
+      if(!isAbsent(s.name, t)){
+        slotSoldiers.push({idx, soldier:s});
       }
     }
 
-    if(slotAssigned.length===0){ t+=3600000; globalPtr+=P; slotNum++; continue; }
+    if(slotSoldiers.length === 0){
+      // כולם נעדרים בסלוט זה — קדם זמן ותור
+      queuePos += P;
+      t += Math.max(...S.posts.map(p=>p.hours)) * 3600000;
+      slotNum++;
+      continue;
+    }
 
     // basePost = offset של החייל הראשון בסלוט
-    // כל חייל נוסף מקבל עמדה הבאה: (basePost + j) % P
-    const basePost=postOffset[slotAssigned[0].idx]%P;
-    slotAssigned.forEach(({idx,soldier},j)=>{
-      const postIdx=(basePost+j)%P;
-      const post=S.posts[postIdx];
-      schedule.push({id:id++,slotNum,soldierName:soldier.name,postName:post.name,postIdx,start:t,end:t+post.hours*3600000});
+    // כל חייל j בסלוט מקבל (basePost+j)%P → עמדות שונות
+    const basePost = postOffset[slotSoldiers[0].idx] % P;
+
+    slotSoldiers.forEach(({idx,soldier},j)=>{
+      const postIdx = (basePost + j) % P;
+      const post    = S.posts[postIdx];
+      schedule.push({
+        id:id++, slotNum,
+        soldierName:soldier.name,
+        postName:post.name, postIdx,
+        start:t, end:t + post.hours*3600000
+      });
       postOffset[idx]++;
     });
 
-    globalPtr+=P;
-    t+=Math.max(...S.posts.map(p=>p.hours))*3600000;
+    queuePos += P;
+    t += Math.max(...S.posts.map(p=>p.hours)) * 3600000;
     slotNum++;
   }
 
-  S.schedule=schedule;
-  save(); renderAll();
-  document.getElementById('regenWrap').classList.remove('hidden');
+  return schedule;
+}
+
+function generateSchedule(){
+  const dtEl=document.getElementById('startDt');
+  if(!dtEl.value){ toast('בחר תאריך התחלה'); return; }
+  if(!S.soldiers.length){ toast('הוסף חיילים קודם'); return; }
+  if(!S.posts.length){ toast('הוסף עמדות קודם'); return; }
+
+  S.cfg={startDt:dtEl.value, days:parseInt(document.getElementById('schedDays').value)||7};
+  const startMs = new Date(dtEl.value).getTime();
+  const endMs   = startMs + S.cfg.days * 86400000;
+
+  // שמור שמירות שכבר עברו
+  const now   = Date.now();
+  const kept  = S.schedule.filter(sh=>sh.end<=now);
+
+  S.schedule = buildSchedule(startMs, endMs, kept);
+  save();
   goTab('sched');
-  toast('לוח שמירות נוצר! 🎉');
+  toast('לוח שמירות עודכן! 🎉');
 }
 
 // ══════════════════════════════════════════════
-//  RENDER
+//  RENDER ALL
 // ══════════════════════════════════════════════
 function renderAll(){
-  const active=['sched','mine','admin'].find(t=>document.getElementById('page-'+t).classList.contains('active'))||'sched';
+  const active = ['sched','mine','admin'].find(t=>
+    document.getElementById('page-'+t).classList.contains('active')
+  ) || 'sched';
   if(active==='sched') renderSched();
-  else if(active==='mine'){ if(S.selSoldier) showDetail(S.selSoldier); else renderMine(); }
-  else if(active==='admin'){
-    // אל תרענן אם המשתמש באמצע הקלדה בשדה הורדה
-    const focused=document.activeElement;
-    const editingRemoval=focused&&focused.closest&&focused.closest('.rm-row');
-    if(!editingRemoval) renderAdmin();
+  if(active==='mine'){
+    if(S.selSoldier) showDetail(S.selSoldier);
+    else renderMine();
+  }
+  if(active==='admin'){
+    // אל תרענן אם המשתמש באמצע עריכת הורדה
+    const focused = document.activeElement;
+    if(!(focused && focused.closest && focused.closest('.rm-row'))) renderAdmin();
   }
 }
 
+// ══════════════════════════════════════════════
+//  RENDER SCHEDULE
+// ══════════════════════════════════════════════
 function renderSched(){
-  const empty=document.getElementById('sched-empty');
-  const content=document.getElementById('sched-content');
+  const empty   = document.getElementById('sched-empty');
+  const content = document.getElementById('sched-content');
   if(!S.schedule.length){
     empty.classList.remove('hidden'); content.classList.add('hidden');
     if(fbReady) empty.innerHTML='<div class="empty-icon">📋</div><p>אין לוח שמירות עדיין.<br>המנהל צריך להגדיר חיילים, עמדות ולייצר לוח.</p>';
     return;
   }
   empty.classList.add('hidden'); content.classList.remove('hidden');
+
   document.getElementById('statsBar').innerHTML=`
     <div class="stat"><div class="stat-val">${S.soldiers.length}</div><div class="stat-lbl">חיילים</div></div>
     <div class="stat"><div class="stat-val">${S.posts.length}</div><div class="stat-lbl">עמדות</div></div>
     <div class="stat"><div class="stat-val">${new Set(S.schedule.map(x=>x.slotNum)).size}</div><div class="stat-lbl">סלוטים</div></div>`;
-  document.getElementById('ratioBarWrap').innerHTML=ratioHTML();
-  const now=Date.now();
-  let lastSlot=-1;
-  document.getElementById('schedBody').innerHTML=S.schedule.map(sh=>{
-    const isNow=now>=sh.start&&now<sh.end;
-    const sep=sh.slotNum!==lastSlot&&lastSlot!==-1;
-    lastSlot=sh.slotNum;
+
+  document.getElementById('ratioBarWrap').innerHTML = ratioHTML();
+
+  const now = Date.now();
+  let lastSlot = -1;
+  document.getElementById('schedBody').innerHTML = S.schedule.map(sh=>{
+    const isNow = now>=sh.start && now<sh.end;
+    const sep   = sh.slotNum!==lastSlot && lastSlot!==-1;
+    lastSlot = sh.slotNum;
     return `<tr class="${isNow?'now-row':''}${sep?' slot-sep':''}">
       <td class="dim mono small">${sh.slotNum}</td>
-      <td class="bold">${sh.soldierName}</td>
+      <td style="font-weight:700">${sh.soldierName}</td>
       <td><span class="badge bc${sh.postIdx%6}">${sh.postName}</span></td>
       <td class="mono small">${fdt(sh.start)}</td>
       <td class="mono small">${fdt(sh.end)}</td>
       <td class="dim small">${(sh.end-sh.start)/3600000}ש'</td>
     </tr>`;
   }).join('');
+
   if(S.cfg.startDt){
     const e=new Date(new Date(S.cfg.startDt).getTime()+S.cfg.days*86400000);
     document.getElementById('schedRange').textContent=fd(new Date(S.cfg.startDt))+' ← '+fd(e);
@@ -577,30 +634,34 @@ function renderSched(){
 }
 
 function ratioHTML(){
-  const N=S.soldiers.length,P=S.posts.length;
+  const N=S.soldiers.length, P=S.posts.length;
   if(!N||!P) return '';
-  const avgH=S.posts.reduce((s,p)=>s+p.hours,0)/P;
-  const spc=Math.ceil(N/P);
-  const guardH=avgH, restH=avgH*(spc-1), total=guardH+restH;
-  const pct=Math.round(guardH/total*100);
+  const avgH  = S.posts.reduce((s,p)=>s+p.hours,0)/P;
+  const spc   = Math.ceil(N/P);
+  const guard = avgH, rest = avgH*(spc-1), total=guard+rest;
+  const pct   = Math.round(guard/total*100);
   return `<div class="ratio-bar">
     <div class="ratio-title">⚖️ יחס שמירה / מנוחה — ממוצע לחייל</div>
     <div class="ratio-track"><div class="ratio-fill" style="width:${pct}%"></div></div>
     <div class="ratio-labels">
-      <span style="color:var(--g)">🛡 שמירה: ${+guardH.toFixed(1)}ש'</span>
+      <span style="color:var(--g)">🛡 שמירה: ${+guard.toFixed(1)}ש'</span>
       <span style="color:var(--dim)">${pct}% מהזמן</span>
-      <span style="color:var(--dim)">😴 מנוחה: ${+restH.toFixed(1)}ש'</span>
+      <span style="color:var(--dim)">😴 מנוחה: ${+rest.toFixed(1)}ש'</span>
     </div>
   </div>`;
 }
 
+// ══════════════════════════════════════════════
+//  RENDER MY SHIFTS
+// ══════════════════════════════════════════════
 function renderMine(){
-  const has=S.schedule.length>0&&S.soldiers.length>0;
-  document.getElementById('mine-empty').classList.toggle('hidden',has||!fbReady);
-  if(!has){ document.getElementById('mine-picker').classList.add('hidden'); document.getElementById('mine-detail').classList.add('hidden'); return; }
-  document.getElementById('mine-picker').classList.remove('hidden');
+  const has = S.schedule.length>0 && S.soldiers.length>0;
+  document.getElementById('mine-empty').classList.toggle('hidden', has||!fbReady);
+  document.getElementById('mine-picker').classList.toggle('hidden', !has);
   document.getElementById('mine-detail').classList.add('hidden');
-  document.getElementById('pickerGrid').innerHTML=S.soldiers.map(s=>`
+  if(!has) return;
+
+  document.getElementById('pickerGrid').innerHTML = S.soldiers.map(s=>`
     <div class="pick-card" data-name="${esc(s.name)}">
       <div class="pick-avatar">${s.name[0]}</div>
       <div class="pick-name">${s.name}</div>
@@ -610,27 +671,42 @@ function renderMine(){
   });
 }
 
+function renderMineActive(){
+  if(S.selSoldier) showDetail(S.selSoldier);
+  else renderMine();
+}
+
 function showDetail(name){
   document.getElementById('mine-picker').classList.add('hidden');
   document.getElementById('mine-detail').classList.remove('hidden');
-  const shifts=S.schedule.filter(sh=>sh.soldierName===name);
-  const now=Date.now();
-  document.getElementById('detailName').textContent=name;
-  document.getElementById('detailStats').textContent=`${shifts.length} שמירות · ${shifts.reduce((s,sh)=>s+(sh.end-sh.start)/3600000,0)} שעות`;
-  const active=shifts.find(sh=>now>=sh.start&&now<sh.end);
-  const next=shifts.find(sh=>sh.start>now);
-  const feat=active||next;
-  document.getElementById('detailNextBanner').innerHTML=feat?`
-    <div class="next-banner"><div class="nb-icon">${active?'🔴':'⏰'}</div>
-    <div><div class="nb-label">${active?'שמירה פעילה עכשיו':'השמירה הבאה שלך'}</div>
-    <div class="nb-val">${feat.postName} · ${fdt(feat.start)}</div></div></div>`:'';
-  document.getElementById('detailRatio').innerHTML=ratioHTML();
-  document.getElementById('detailList').innerHTML=shifts.map(sh=>{
-    const isNow=now>=sh.start&&now<sh.end;
-    const isPast=now>=sh.end;
-    const dur=(sh.end-sh.start)/3600000;
-    const hasR=!!S.reminders[sh.id];
-    const canR=!isPast&&!isNow;
+
+  const shifts = S.schedule.filter(sh=>sh.soldierName===name);
+  const now    = Date.now();
+
+  document.getElementById('detailName').textContent  = name;
+  document.getElementById('detailStats').textContent =
+    `${shifts.length} שמירות · ${shifts.reduce((s,sh)=>s+(sh.end-sh.start)/3600000,0)} שעות`;
+
+  const active = shifts.find(sh=>now>=sh.start&&now<sh.end);
+  const next   = shifts.find(sh=>sh.start>now);
+  const feat   = active||next;
+  document.getElementById('detailNextBanner').innerHTML = feat?`
+    <div class="next-banner">
+      <div class="nb-icon">${active?'🔴':'⏰'}</div>
+      <div>
+        <div class="nb-label">${active?'שמירה פעילה עכשיו':'השמירה הבאה שלך'}</div>
+        <div class="nb-val">${feat.postName} · ${fdt(feat.start)}</div>
+      </div>
+    </div>` : '';
+
+  document.getElementById('detailRatio').innerHTML = ratioHTML();
+
+  document.getElementById('detailList').innerHTML = shifts.map(sh=>{
+    const isNow  = now>=sh.start&&now<sh.end;
+    const isPast = now>=sh.end;
+    const dur    = (sh.end-sh.start)/3600000;
+    const hasR   = !!S.reminders[sh.id];
+    const canR   = !isPast&&!isNow;
     return `<div class="shift-card ${isNow?'now-card':!isPast?'upcoming':''}">
       <div class="shift-time"><div class="t">${ft(sh.start)}</div><div class="d">${fday(sh.start)}</div></div>
       <div class="vline"></div>
@@ -638,45 +714,56 @@ function showDetail(name){
         <div class="pname"><span class="badge bc${sh.postIdx%6}">${sh.postName}</span></div>
         <div class="pdur">${ft(sh.start)}–${ft(sh.end)} · ${dur}ש'</div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
         <div class="shift-status ${isNow?'st-now':!isPast?'st-next':'st-done'}">${isNow?'🔴 עכשיו':!isPast?'⏰ קרוב':'✓ הסתיים'}</div>
         ${canR?`<button class="notif-btn ${hasR?'on':''}" data-sid="${sh.id}">${hasR?'🔔 ביטול':'🔔 תזכורת'}</button>`:''}
       </div>
     </div>`;
   }).join('');
+
   document.querySelectorAll('.notif-btn').forEach(btn=>{
     btn.addEventListener('click',()=>toggleReminder(parseInt(btn.dataset.sid)));
   });
 }
 
+// ══════════════════════════════════════════════
+//  RENDER ADMIN
+// ══════════════════════════════════════════════
 function renderAdmin(){
-  document.getElementById('soldierCount').textContent=S.soldiers.length+' חיילים';
-  document.getElementById('soldierList').innerHTML=S.soldiers.length
-    ?S.soldiers.map((s,i)=>`<div class="chip">
+  document.getElementById('soldierCount').textContent = S.soldiers.length+' חיילים';
+  document.getElementById('soldierList').innerHTML = S.soldiers.length
+    ? S.soldiers.map((s,i)=>`<div class="chip">
         <div class="chip-left"><div class="chip-num">${i+1}</div><div class="chip-name">${s.name}</div></div>
-        <button class="btn btn-red btn-sm del-soldier" data-id="${s.id}">✕</button></div>`).join('')
-    :'<div class="empty" style="padding:14px"><p>אין חיילים</p></div>';
-  document.querySelectorAll('.del-soldier').forEach(btn=>btn.addEventListener('click',()=>delSoldier(parseInt(btn.dataset.id))));
+        <button class="btn btn-red btn-sm del-soldier" data-id="${s.id}">✕</button>
+      </div>`).join('')
+    : '<div class="empty" style="padding:14px"><p>אין חיילים</p></div>';
+  document.querySelectorAll('.del-soldier').forEach(btn=>
+    btn.addEventListener('click',()=>delSoldier(parseInt(btn.dataset.id))));
 
-  document.getElementById('postCount').textContent=S.posts.length+' עמדות';
-  document.getElementById('postList').innerHTML=S.posts.length
-    ?S.posts.map((p,i)=>`<div class="chip">
+  document.getElementById('postCount').textContent = S.posts.length+' עמדות';
+  document.getElementById('postList').innerHTML = S.posts.length
+    ? S.posts.map((p,i)=>`<div class="chip">
         <div class="chip-left"><span class="badge bc${i%6}">${p.name}</span><span class="dim small"> ${p.hours}ש'</span></div>
-        <button class="btn btn-red btn-sm del-post" data-id="${p.id}">✕</button></div>`).join('')
-    :'<div class="empty" style="padding:14px"><p>אין עמדות</p></div>';
-  document.querySelectorAll('.del-post').forEach(btn=>btn.addEventListener('click',()=>delPost(parseInt(btn.dataset.id))));
+        <button class="btn btn-red btn-sm del-post" data-id="${p.id}">✕</button>
+      </div>`).join('')
+    : '<div class="empty" style="padding:14px"><p>אין עמדות</p></div>';
+  document.querySelectorAll('.del-post').forEach(btn=>
+    btn.addEventListener('click',()=>delPost(parseInt(btn.dataset.id))));
 
   if(S.cfg.startDt) document.getElementById('startDt').value=S.cfg.startDt;
   else{ const d=new Date();d.setMinutes(0,0,0);document.getElementById('startDt').value=d.toISOString().slice(0,16); }
-  document.getElementById('schedDays').value=S.cfg.days;
-  document.getElementById('regenWrap').classList.toggle('hidden', S.schedule.length===0);
+  document.getElementById('schedDays').value = S.cfg.days;
+
   renderRemovals();
 }
 
 function renderRemovals(){
-  const el=document.getElementById('removalList');
-  if(!S.removals.length){ el.innerHTML='<div class="empty" style="padding:10px"><p>אין הורדות מוגדרות</p></div>'; return; }
-  el.innerHTML=S.removals.map(r=>`
+  const el = document.getElementById('removalList');
+  if(!S.removals.length){
+    el.innerHTML='<div class="empty" style="padding:10px"><p>אין הורדות מוגדרות</p></div>';
+    return;
+  }
+  el.innerHTML = S.removals.map(r=>`
     <div class="rm-row">
       <div class="rm-field"><div class="lbl">חייל</div>
         <select data-rid="${r.id}" data-field="soldierName">
@@ -692,35 +779,38 @@ function renderRemovals(){
       </div>
       <button class="btn btn-red btn-sm del-removal" data-id="${r.id}" style="align-self:flex-end">✕</button>
     </div>`).join('');
+
   document.querySelectorAll('[data-rid]').forEach(input=>{
-    // שמור מיד בכל שינוי — לפני שFirebase יספיק לרענן
     input.addEventListener('change',()=>{
       const r=S.removals.find(x=>x.id===parseInt(input.dataset.rid));
-      if(r){
-        r[input.dataset.field]=input.value;
-        save();
-        toast('✓ נשמר');
-      }
+      if(r){ r[input.dataset.field]=input.value; save(); toast('✓ נשמר'); }
     });
   });
-  document.querySelectorAll('.del-removal').forEach(btn=>btn.addEventListener('click',()=>delRemoval(parseInt(btn.dataset.id))));
+  document.querySelectorAll('.del-removal').forEach(btn=>
+    btn.addEventListener('click',()=>delRemoval(parseInt(btn.dataset.id))));
 }
 
 // ══════════════════════════════════════════════
 //  UTILS
 // ══════════════════════════════════════════════
-const HE=['א','ב','ג','ד','ה','ו','ש'];
-const pz=n=>String(n).padStart(2,'0');
-const ft=ms=>{const d=new Date(ms);return pz(d.getHours())+':'+pz(d.getMinutes());};
-const fd=d=>d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
-const fdt=ms=>{const d=new Date(ms);return HE[d.getDay()]+"' "+d.getDate()+'/'+(d.getMonth()+1)+' '+pz(d.getHours())+':'+pz(d.getMinutes());};
-const fday=ms=>{const d=new Date(ms);return HE[d.getDay()]+"' "+d.getDate()+'/'+(d.getMonth()+1);};
-const esc=s=>s.replace(/"/g,'&quot;');
-function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2600);}
+const HE = ['א','ב','ג','ד','ה','ו','ש'];
+const pz  = n => String(n).padStart(2,'0');
+const ft  = ms => { const d=new Date(ms); return pz(d.getHours())+':'+pz(d.getMinutes()); };
+const fd  = d  => d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+const fdt = ms => { const d=new Date(ms); return HE[d.getDay()]+"' "+d.getDate()+'/'+(d.getMonth()+1)+' '+pz(d.getHours())+':'+pz(d.getMinutes()); };
+const fday= ms => { const d=new Date(ms); return HE[d.getDay()]+"' "+d.getDate()+'/'+(d.getMonth()+1); };
+const esc = s  => s.replace(/"/g,'&quot;');
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2600);
+}
 
 // ══════════════════════════════════════════════
-//  EVENT LISTENERS (אין onclick ב-HTML!)
+//  EVENT LISTENERS
 // ══════════════════════════════════════════════
+
+// טאבים
 document.querySelectorAll('.tab').forEach(tab=>{
   tab.addEventListener('click',()=>{
     if(tab.dataset.tab==='admin'&&!S.isAdmin) return;
@@ -728,6 +818,7 @@ document.querySelectorAll('.tab').forEach(tab=>{
   });
 });
 
+// כפתור ניהול
 document.getElementById('adminBtn').addEventListener('click',()=>{
   if(S.isAdmin){ logoutAdmin(); return; }
   document.getElementById('pwInput').value='';
@@ -735,24 +826,45 @@ document.getElementById('adminBtn').addEventListener('click',()=>{
   document.getElementById('modalLogin').classList.remove('hidden');
   setTimeout(()=>document.getElementById('pwInput').focus(),100);
 });
-
 document.getElementById('confirmLoginBtn').addEventListener('click',()=>{
-  if(document.getElementById('pwInput').value===PW){ loginAdmin(); document.getElementById('modalLogin').classList.add('hidden'); }
-  else document.getElementById('pwErr').classList.remove('hidden');
+  if(document.getElementById('pwInput').value===PW){
+    loginAdmin(); document.getElementById('modalLogin').classList.add('hidden');
+  } else { document.getElementById('pwErr').classList.remove('hidden'); }
 });
-document.getElementById('pwInput').addEventListener('keydown',e=>{
-  if(e.key==='Enter') document.getElementById('confirmLoginBtn').click();
-});
+document.getElementById('pwInput').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('confirmLoginBtn').click(); });
 document.getElementById('cancelLoginBtn').addEventListener('click',()=>document.getElementById('modalLogin').classList.add('hidden'));
 
+// חיילים ועמדות
 document.getElementById('addSoldierBtn').addEventListener('click',addSoldier);
 document.getElementById('newSoldier').addEventListener('keydown',e=>{ if(e.key==='Enter') addSoldier(); });
 document.getElementById('addPostBtn').addEventListener('click',addPost);
 document.getElementById('newPostName').addEventListener('keydown',e=>{ if(e.key==='Enter') addPost(); });
+
+// לוח
 document.getElementById('generateBtn').addEventListener('click',generateSchedule);
 document.getElementById('regenBtn').addEventListener('click',generateSchedule);
+
+// הורדות
 document.getElementById('addRemovalBtn').addEventListener('click',addRemoval);
-document.getElementById('backBtn').addEventListener('click',()=>{ S.selSoldier=null; document.getElementById('mine-detail').classList.add('hidden'); renderMine(); });
+
+// חזרה
+document.getElementById('backBtn').addEventListener('click',()=>{
+  S.selSoldier=null;
+  document.getElementById('mine-detail').classList.add('hidden');
+  renderMine();
+});
+
+// איפוס
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  document.getElementById('modalReset').classList.remove('hidden');
+});
+document.getElementById('cancelResetBtn').addEventListener('click',()=>{
+  document.getElementById('modalReset').classList.add('hidden');
+});
+document.getElementById('confirmResetBtn').addEventListener('click',()=>{
+  document.getElementById('modalReset').classList.add('hidden');
+  resetAll();
+});
 
 </script>
 </body>
