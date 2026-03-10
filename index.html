@@ -438,6 +438,14 @@ function addSoldier(){
   el.value=''; save(); renderAdmin(); toast(n+' נוסף');
 }
 function delSoldier(id){ S.soldiers=S.soldiers.filter(s=>s.id!==id); save(); renderAdmin(); }
+function moveSoldier(id, dir){
+  const i=S.soldiers.findIndex(s=>s.id===id);
+  if(i<0) return;
+  const j=i+dir;
+  if(j<0||j>=S.soldiers.length) return;
+  [S.soldiers[i],S.soldiers[j]]=[S.soldiers[j],S.soldiers[i]];
+  save(); renderAdmin();
+}
 
 function addPost(){
   const n=document.getElementById('newPostName').value.trim();
@@ -554,6 +562,7 @@ function buildSchedule(startMs, endMs, keptSchedule){
   return schedule;
 }
 
+// צור לוח — מאפס הכל ומתחיל מהשעה שהוגדרה
 function generateSchedule(){
   const dtEl=document.getElementById('startDt');
   if(!dtEl.value){ toast('בחר תאריך התחלה'); return; }
@@ -564,14 +573,32 @@ function generateSchedule(){
   const startMs = new Date(dtEl.value).getTime();
   const endMs   = startMs + S.cfg.days * 86400000;
 
+  // מאפס הכל — מתחיל מהשעה שהוגדרה
+  S.schedule = buildSchedule(startMs, endMs, []);
+  save();
+  goTab('sched');
+  toast('לוח שמירות נוצר! 🎉');
+}
+
+// עדכן לוח — שומר שמירות שעברו, ממשיך מהשעה הנוכחית
+function regenSchedule(){
+  const dtEl=document.getElementById('startDt');
+  if(!dtEl.value){ toast('בחר תאריך התחלה'); return; }
+  if(!S.soldiers.length){ toast('הוסף חיילים קודם'); return; }
+  if(!S.posts.length){ toast('הוסף עמדות קודם'); return; }
+
+  S.cfg={startDt:dtEl.value, days:parseInt(document.getElementById('schedDays').value)||7};
+  const startMs = new Date(dtEl.value).getTime();
+  const endMs   = startMs + S.cfg.days * 86400000;
+
   // שמור שמירות שכבר עברו
-  const now   = Date.now();
-  const kept  = S.schedule.filter(sh=>sh.end<=now);
+  const now  = Date.now();
+  const kept = S.schedule.filter(sh=>sh.end<=now);
 
   S.schedule = buildSchedule(startMs, endMs, kept);
   save();
   goTab('sched');
-  toast('לוח שמירות עודכן! 🎉');
+  toast('לוח עודכן! 🎉');
 }
 
 // ══════════════════════════════════════════════
@@ -736,11 +763,19 @@ function renderAdmin(){
   document.getElementById('soldierList').innerHTML = S.soldiers.length
     ? S.soldiers.map((s,i)=>`<div class="chip">
         <div class="chip-left"><div class="chip-num">${i+1}</div><div class="chip-name">${s.name}</div></div>
-        <button class="btn btn-red btn-sm del-soldier" data-id="${s.id}">✕</button>
+        <div style="display:flex;gap:4px;align-items:center">
+          <button class="btn btn-ghost btn-sm move-up" data-id="${s.id}" ${i===0?'disabled style="opacity:.3"':''}>▲</button>
+          <button class="btn btn-ghost btn-sm move-dn" data-id="${s.id}" ${i===S.soldiers.length-1?'disabled style="opacity:.3"':''}>▼</button>
+          <button class="btn btn-red btn-sm del-soldier" data-id="${s.id}">✕</button>
+        </div>
       </div>`).join('')
     : '<div class="empty" style="padding:14px"><p>אין חיילים</p></div>';
   document.querySelectorAll('.del-soldier').forEach(btn=>
     btn.addEventListener('click',()=>delSoldier(parseInt(btn.dataset.id))));
+  document.querySelectorAll('.move-up').forEach(btn=>
+    btn.addEventListener('click',()=>moveSoldier(parseInt(btn.dataset.id),-1)));
+  document.querySelectorAll('.move-dn').forEach(btn=>
+    btn.addEventListener('click',()=>moveSoldier(parseInt(btn.dataset.id),+1)));
 
   document.getElementById('postCount').textContent = S.posts.length+' עמדות';
   document.getElementById('postList').innerHTML = S.posts.length
@@ -844,7 +879,7 @@ document.getElementById('newPostName').addEventListener('keydown',e=>{ if(e.key=
 
 // לוח
 document.getElementById('generateBtn').addEventListener('click',generateSchedule);
-document.getElementById('regenBtn').addEventListener('click',generateSchedule);
+document.getElementById('regenBtn').addEventListener('click',regenSchedule);
 
 // הורדות
 document.getElementById('addRemovalBtn').addEventListener('click',addRemoval);
