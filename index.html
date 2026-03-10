@@ -510,8 +510,8 @@ function buildSchedule(startMs, endMs, keptSchedule){
   let id = schedule.length ? Math.max(...schedule.map(x=>x.id))+1 : 1;
 
   while(t < endMs){
-    // אסוף P חיילים זמינים מהתור
-    // ממשיך לחפש בתור עד שמוצא P זמינים — גם אם יש כמה נעדרים בו-זמנית
+    // אסוף P חיילים זמינים מהתור — מדלג על נעדרים בלי לדלג על מקומם
+    // queuePos מתקדם לפי כמה צעדים עשינו בפועל (כולל דילוגים על נעדרים)
     const slotSoldiers=[];
     let step=0;
     while(slotSoldiers.length < P && step < N){
@@ -522,10 +522,10 @@ function buildSchedule(startMs, endMs, keptSchedule){
       }
       step++;
     }
+    queuePos += step; // מתקדם לפי מה שנסרק בפועל — לא תמיד P
 
     if(slotSoldiers.length === 0){
       // כולם נעדרים — דלג שעה
-      queuePos += P;
       t += Math.max(...S.posts.map(p=>p.hours)) * 3600000;
       slotNum++;
       continue;
@@ -547,7 +547,6 @@ function buildSchedule(startMs, endMs, keptSchedule){
       postOffset[idx]++;
     });
 
-    queuePos += P;
     t += Math.max(...S.posts.map(p=>p.hours)) * 3600000;
     slotNum++;
   }
