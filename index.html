@@ -443,6 +443,12 @@ function delRemoval(id){
 
 // ══════════════════════════════════════════════
 //  SCHEDULE GENERATION
+//
+//  לוגיקה:
+//  - רשימת כל החיילים קבועה (S.soldiers)
+//  - globalPtr מתקדם ב-P בכל סלוט — תמיד לפי הרשימה הקבועה
+//  - בתוך כל סלוט: לוקחים P חיילים החל מ-globalPtr, מדלגים על נעדרים
+//  - כך הסדר נשמר וכל חייל עובר עמדה בכל שמירה שלו
 // ══════════════════════════════════════════════
 function generateSchedule(){
   const dtEl=document.getElementById('startDt');
@@ -454,6 +460,7 @@ function generateSchedule(){
   const startMs=new Date(dtEl.value).getTime();
   const endMs=startMs+S.cfg.days*86400000;
   const P=S.posts.length;
+  const N=S.soldiers.length;
 
   const rmv=S.removals.filter(r=>r.soldierName&&r.from).map(r=>({
     name:r.soldierName,
@@ -462,33 +469,52 @@ function generateSchedule(){
   }));
   const isAbsent=(name,t)=>rmv.some(r=>r.name===name&&t>=r.from&&t<r.to);
 
+  // שמור שמירות שכבר עברו
   const now=Date.now();
   const kept=S.schedule.filter(sh=>sh.end<=now);
   const keptSlotCount=new Set(kept.map(x=>x.slotNum)).size;
 
   let t=kept.length>0?Math.max(...kept.map(x=>x.end)):startMs;
   let slotNum=keptSlotCount+1;
-  let slotPtr=keptSlotCount*P;
-  let rrPtr=keptSlotCount*P;
+
+  // globalPtr — כמה "צעדים" עשינו ברשימה הקבועה עד כה
+  // בכל סלוט: globalPtr מתקדם ב-P (גם אם חלק נעדרים)
+  let globalPtr=keptSlotCount*P;
+
+  // postOffset לכל חייל — כמה פעמים שמר (קובע איזו עמדה הוא מקבל)
+  const postOffset=new Array(N).fill(0);
+  kept.forEach(sh=>{
+    const idx=S.soldiers.findIndex(s=>s.name===sh.soldierName);
+    if(idx>=0) postOffset[idx]++;
+  });
 
   const schedule=[...kept];
   let id=schedule.length?Math.max(...schedule.map(x=>x.id))+1:1;
 
   while(t<endMs){
-    const available=S.soldiers.filter(s=>!isAbsent(s.name,t));
-    const M=available.length;
-    if(M===0){ t+=3600000; continue; }
-    const take=Math.min(M,P);
-    const slotSoldiers=[];
-    for(let j=0;j<take;j++) slotSoldiers.push(available[(rrPtr+j)%M]);
-    const basePostIdx=slotPtr%P;
-    slotSoldiers.forEach((soldier,j)=>{
-      const postIdx=(basePostIdx+j)%P;
+    // בחר P חיילים מהרשימה הקבועה החל מ-globalPtr, דלג על נעדרים
+    const slotAssigned=[];
+    for(let step=0; step<P; step++){
+      const baseIdx=(globalPtr+step)%N;
+      const soldier=S.soldiers[baseIdx];
+      if(!isAbsent(soldier.name,t)){
+        slotAssigned.push({idx:baseIdx, soldier});
+      }
+    }
+
+    if(slotAssigned.length===0){ t+=3600000; globalPtr+=P; slotNum++; continue; }
+
+    // basePost = offset של החייל הראשון בסלוט
+    // כל חייל נוסף מקבל עמדה הבאה: (basePost + j) % P
+    const basePost=postOffset[slotAssigned[0].idx]%P;
+    slotAssigned.forEach(({idx,soldier},j)=>{
+      const postIdx=(basePost+j)%P;
       const post=S.posts[postIdx];
       schedule.push({id:id++,slotNum,soldierName:soldier.name,postName:post.name,postIdx,start:t,end:t+post.hours*3600000});
+      postOffset[idx]++;
     });
-    rrPtr+=take;
-    slotPtr+=P;
+
+    globalPtr+=P;
     t+=Math.max(...S.posts.map(p=>p.hours))*3600000;
     slotNum++;
   }
@@ -643,7 +669,7 @@ function renderAdmin(){
   if(S.cfg.startDt) document.getElementById('startDt').value=S.cfg.startDt;
   else{ const d=new Date();d.setMinutes(0,0,0);document.getElementById('startDt').value=d.toISOString().slice(0,16); }
   document.getElementById('schedDays').value=S.cfg.days;
-  if(S.schedule.length) document.getElementById('regenWrap').classList.remove('hidden');
+  document.getElementById('regenWrap').classList.toggle('hidden', S.schedule.length===0);
   renderRemovals();
 }
 
