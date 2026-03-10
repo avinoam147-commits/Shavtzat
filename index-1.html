@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐯 שבצק ותיקה</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;600&display=swap');
+:root{--bg:#080a0e;--s1:#0e1117;--s2:#141720;--s3:#1c2030;--border:#22273a;--border2:#2d3348;--g:#00e5c0;--g2:#00b89a;--orange:#ff7043;--yellow:#ffc107;--red:#f44336;--text:#e8ecf5;--dim:#5a6280;--dim2:#3a4060;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Heebo',sans-serif;display:flex;flex-direction:column;height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,192,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,192,.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;}
+header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:54px;background:var(--s1);border-bottom:1px solid var(--border);z-index:10;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:32px;height:32px;background:var(--s3);border:1px solid var(--border2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.logo-text{font-size:20px;font-weight:900;letter-spacing:-0.5px;}
+.logo-sub{font-size:9px;color:var(--dim);font-family:'IBM Plex Mono',monospace;letter-spacing:3px;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.clock-pill{background:var(--s2);border:1px solid var(--border2);border-radius:20px;padding:5px 12px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--g);display:flex;align-items:center;gap:6px;}
+.clock-dot{width:5px;height:5px;background:var(--g);border-radius:50%;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+#adminBtn{background:transparent;border:1px solid var(--border2);color:var(--dim);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:12px;font-weight:700;transition:all .2s;display:flex;align-items:center;gap:5px;}
+#adminBtn:hover{border-color:var(--g);color:var(--g);}
+#adminBtn.on{background:var(--g);border-color:var(--g);color:var(--bg);}
+nav{flex-shrink:0;display:flex;background:var(--s1);border-bottom:1px solid var(--border);padding:0 12px;z-index:10;overflow-x:auto;}
+.tab{padding:11px 14px;font-size:13px;font-weight:700;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:5px;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--g);border-bottom-color:var(--g);}
+main{flex:1;overflow-y:auto;padding:16px;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+main::-webkit-scrollbar{width:4px;}
+main::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+.page{display:none;}.page.active{display:block;}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px;}
+.card-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:13px;font-weight:800;display:flex;align-items:center;gap:7px;}
+.card-body{padding:16px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+@media(max-width:640px){.g2{grid-template-columns:1fr;}.clock-pill{display:none;}}
+.lbl{display:block;font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+input,select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--text);font-family:'Heebo',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
+input:focus,select:focus{border-color:var(--g);}
+input::placeholder{color:var(--dim2);}
+select option{background:var(--s2);}
+.btn{padding:8px 16px;border:none;border-radius:7px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.btn-g{background:var(--g);color:var(--bg);}.btn-g:hover{background:var(--g2);}
+.btn-red{background:var(--red);color:#fff;}.btn-red:hover{background:#c62828;}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--dim);}.btn-ghost:hover{border-color:var(--dim);color:var(--text);}
+.btn-orange{background:var(--orange);color:#fff;}
+.btn-sm{padding:5px 9px;font-size:11px;}.btn-full{width:100%;justify-content:center;}
+.chip-list{display:flex;flex-direction:column;gap:5px;}
+.chip{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 11px;display:flex;align-items:center;justify-content:space-between;}
+.chip-left{display:flex;align-items:center;gap:9px;}
+.chip-num{width:20px;height:20px;background:var(--s3);border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim);display:flex;align-items:center;justify-content:center;}
+.chip-name{font-size:13px;font-weight:600;}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
+.bc0{background:rgba(0,229,192,.12);color:#00e5c0;}.bc1{background:rgba(255,112,67,.12);color:#ff7043;}.bc2{background:rgba(77,159,255,.12);color:#4d9fff;}.bc3{background:rgba(255,193,7,.12);color:#ffc107;}.bc4{background:rgba(156,110,255,.12);color:#9c6eff;}.bc5{background:rgba(244,67,54,.12);color:#f44336;}
+.tbl-wrap{overflow-x:auto;}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.tbl th{padding:8px 12px;text-align:right;font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border);background:var(--s2);white-space:nowrap;}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:rgba(255,255,255,.015);}
+.tbl tr.now-row td{background:rgba(0,229,192,.06);}
+.tbl tr.now-row td:first-child{border-right:2px solid var(--g);}
+.tbl tr.slot-sep td{border-top:2px solid var(--border2);}
+.stat{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;text-align:center;}
+.stat-val{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;color:var(--g);}
+.stat-lbl{font-size:10px;color:var(--dim);margin-top:3px;}
+.ratio-bar{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:14px;}
+.ratio-title{font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;}
+.ratio-track{height:10px;background:var(--s3);border-radius:5px;overflow:hidden;margin-bottom:6px;}
+.ratio-fill{height:100%;background:linear-gradient(90deg,var(--g),var(--g2));border-radius:5px;}
+.ratio-labels{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:11px;}
+.picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:9px;}
+.pick-card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;}
+.pick-card:hover{border-color:var(--g);transform:translateY(-2px);}
+.pick-avatar{width:38px;height:38px;border-radius:50%;background:var(--s3);margin:0 auto 7px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--g);}
+.pick-name{font-size:12px;font-weight:700;}
+.shift-card{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:7px;}
+.shift-card.upcoming{border-color:var(--g);}
+.shift-card.now-card{border-color:var(--orange);background:rgba(255,112,67,.05);}
+.shift-time{min-width:58px;text-align:center;font-family:'IBM Plex Mono',monospace;}
+.shift-time .t{font-size:15px;font-weight:600;color:var(--g);}
+.shift-time .d{font-size:9px;color:var(--dim);margin-top:2px;}
+.vline{width:1px;align-self:stretch;background:var(--border);}
+.shift-info{flex:1;}
+.shift-info .pname{font-size:13px;font-weight:700;margin-bottom:3px;}
+.shift-info .pdur{font-size:11px;color:var(--dim);}
+.shift-status{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
+.st-now{background:var(--orange);color:#fff;}
+.st-next{background:rgba(0,229,192,.15);color:var(--g);}
+.st-done{background:var(--s3);color:var(--dim);}
+.notif-btn{background:transparent;border:1px solid var(--border2);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:11px;color:var(--dim);transition:all .2s;white-space:nowrap;font-family:'Heebo',sans-serif;font-weight:600;}
+.notif-btn:hover{border-color:var(--yellow);color:var(--yellow);}
+.notif-btn.on{border-color:var(--yellow);color:var(--yellow);background:rgba(255,193,7,.08);}
+.next-banner{background:rgba(0,229,192,.06);border:1px solid rgba(0,229,192,.25);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.nb-icon{font-size:22px;}
+.nb-label{font-size:10px;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.8px;}
+.nb-val{font-size:14px;font-weight:800;color:var(--g);margin-top:2px;}
+.rm-row{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;margin-bottom:7px;}
+.rm-field{flex:1;min-width:110px;}
+.rm-field input,.rm-field select{padding:6px 9px;font-size:12px;}
+.empty{text-align:center;padding:36px 16px;color:var(--dim);}
+.empty-icon{font-size:32px;margin-bottom:9px;opacity:.4;}
+.empty p{font-size:13px;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal{background:var(--s1);border:1px solid var(--border2);border-radius:14px;padding:24px;width:100%;max-width:360px;animation:pop .2s ease;}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.modal h2{font-size:18px;font-weight:800;margin-bottom:5px;}
+.modal p{font-size:12px;color:var(--dim);margin-bottom:16px;}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
+.err-msg{font-size:11px;color:var(--red);margin-top:5px;margin-bottom:8px;}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--s2);border:1px solid var(--g);color:var(--g);padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;z-index:9999;transition:transform .3s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.mb-3{margin-bottom:10px;}.mb-4{margin-bottom:14px;}
+.flex{display:flex;}.gap-2{gap:8px;}.items-c{align-items:center;}.jc-sb{justify-content:space-between;}
+.hidden{display:none!important;}
+.mono{font-family:'IBM Plex Mono',monospace;}.dim{color:var(--dim);}.small{font-size:11px;}.bold{font-weight:700;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">🐯</div>
+    <div>
+      <div class="logo-text">שבצק ותיקה</div>
+      <div class="logo-sub">GUARD SCHEDULER</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="clock-pill"><div class="clock-dot"></div><span id="clockTxt">--:--:--</span></div>
+    <button id="adminBtn">🔐 ניהול</button>
+  </div>
+</header>
+
+<nav>
+  <div class="tab active" data-tab="sched">📋 לוח שמירות</div>
+  <div class="tab" data-tab="mine">👤 השמירות שלי</div>
+  <div class="tab hidden" data-tab="admin" id="adminTab">⚙️ ניהול</div>
+</nav>
+
+<main>
+  <!-- SCHEDULE -->
+  <div class="page active" id="page-sched">
+    <div id="sched-empty" class="empty">
+      <div class="empty-icon">⏳</div><p>מתחבר לשרת...</p>
+    </div>
+    <div id="sched-content" class="hidden">
+      <div class="g3 mb-4" id="statsBar"></div>
+      <div id="ratioBarWrap"></div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">🗓 לוח שמירות מלא</div>
+          <span id="schedRange" class="dim small mono"></span>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th>סלוט</th><th>חייל</th><th>עמדה</th><th>התחלה</th><th>סיום</th><th>משך</th></tr></thead>
+              <tbody id="schedBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY SHIFTS -->
+  <div class="page" id="page-mine">
+    <div id="mine-picker">
+      <p class="dim small mb-3">בחר את השם שלך:</p>
+      <div class="picker-grid" id="pickerGrid"></div>
+    </div>
+    <div id="mine-detail" class="hidden">
+      <div class="flex items-c jc-sb mb-4">
+        <div>
+          <div style="font-size:17px;font-weight:800" id="detailName"></div>
+          <div class="dim small" id="detailStats"></div>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="backBtn">← חזרה</button>
+      </div>
+      <div id="detailNextBanner"></div>
+      <div id="detailRatio" class="mb-4"></div>
+      <div id="detailList"></div>
+    </div>
+    <div id="mine-empty" class="empty hidden">
+      <div class="empty-icon">📋</div><p>אין לוח שמירות עדיין.</p>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="page" id="page-admin">
+    <div class="g2 mb-4">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-head">
+          <div class="card-title">👥 חיילים</div>
+          <span class="dim small" id="soldierCount">0 חיילים</span>
+        </div>
+        <div class="card-body">
+          <div class="flex gap-2 mb-3">
+            <input id="newSoldier" placeholder="שם החייל...">
+            <button class="btn btn-g" id="addSoldierBtn" style="white-space:nowrap">+ הוסף</button>
+          </div>
+          <div class="chip-list" id="soldierList"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-head">
+          <div class="card-title">🏛 עמדות</div>
+          <span class="dim small" id="postCount">0 עמדות</span>
+        </div>
+        <div class="card-body">
+          <div class="flex gap-2 mb-3" style="align-items:flex-end">
+            <div style="flex:1"><label class="lbl">שם</label><input id="newPostName" placeholder="שם עמדה..."></div>
+            <div style="width:65px"><label class="lbl">שעות</label><input id="newPostHours" type="number" value="1" min="0.5" max="12" step="0.5"></div>
+            <button class="btn btn-g" id="addPostBtn" style="white-space:nowrap">+ הוסף</button>
+          </div>
+          <div class="chip-list" id="postList"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-title">⚙️ הגדרות לוח</div></div>
+      <div class="card-body">
+        <div class="g2 mb-3">
+          <div><label class="lbl">תאריך ושעת התחלה</label><input type="datetime-local" id="startDt"></div>
+          <div><label class="lbl">מספר ימים ללוח</label><input type="number" id="schedDays" value="7" min="1" max="60"></div>
+        </div>
+        <button class="btn btn-g btn-full" id="generateBtn">🚀 צור לוח שמירות</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title">⛔ הורדות מהשמירה</div>
+        <button class="btn btn-ghost btn-sm" id="addRemovalBtn">+ הוסף</button>
+      </div>
+      <div class="card-body">
+        <p class="dim small mb-3">הגדר מי נעדר מתי — הלוח יתעדכן בעת יצירה מחדש.</p>
+        <div id="removalList"></div>
+      </div>
+    </div>
+    <div id="regenWrap" class="hidden mb-4">
+      <button class="btn btn-orange btn-full" id="regenBtn">🔄 עדכן לוח (שמור שמירות שעברו)</button>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL LOGIN -->
+<div class="overlay hidden" id="modalLogin">
+  <div class="modal">
+    <h2>🔐 כניסה לניהול</h2>
+    <p>הכנס את סיסמת הניהול</p>
+    <input type="password" id="pwInput" placeholder="סיסמה...">
+    <div class="err-msg hidden" id="pwErr">סיסמה שגויה</div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" id="cancelLoginBtn">ביטול</button>
+      <button class="btn btn-g" id="confirmLoginBtn">כניסה</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyBvww6mQQTJB_qIuPnkUhaiLMESbtCtxh4",
+  authDomain:"project-7387679138362570038.firebaseapp.com",
+  databaseURL:"https://project-7387679138362570038-default-rtdb.firebaseio.com",
+  projectId:"project-7387679138362570038",
+  storageBucket:"project-7387679138362570038.firebasestorage.app",
+  messagingSenderId:"920956297431",
+  appId:"1:920956297431:web:ea975248b8acd1ecf25092"
+});
+const db = getDatabase(app);
+const DB = ref(db, 'shavatz');
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+const PW = 'A147';
+let S = { isAdmin:false, soldiers:[], posts:[], schedule:[], removals:[], cfg:{startDt:'',days:7}, selSoldier:null, reminders:{} };
+let fbReady = false;
+
+function fix(){
+  if(!Array.isArray(S.soldiers)) S.soldiers=[];
+  if(!Array.isArray(S.posts))    S.posts=[];
+  if(!Array.isArray(S.schedule)) S.schedule=[];
+  if(!Array.isArray(S.removals)) S.removals=[];
+  if(!S.reminders) S.reminders={};
+  if(!S.cfg) S.cfg={startDt:'',days:7};
+}
+
+function save(){
+  const d={soldiers:S.soldiers,posts:S.posts,schedule:S.schedule,removals:S.removals,cfg:S.cfg};
+  set(DB,d).catch(e=>toast('⚠️ שגיאת שמירה: '+e.message));
+  localStorage.setItem('shavatz_bk',JSON.stringify(d));
+}
+
+// Load backup immediately
+try{
+  const bk=localStorage.getItem('shavatz_bk');
+  if(bk){const d=JSON.parse(bk);Object.assign(S,d);fix();}
+}catch(e){}
+
+// Firebase real-time listener
+onValue(DB, snap=>{
+  const d=snap.val();
+  if(d){
+    S.soldiers=d.soldiers||[];
+    S.posts=d.posts||[];
+    S.schedule=d.schedule||[];
+    S.removals=d.removals||[];
+    S.cfg=d.cfg||{startDt:'',days:7};
+    fix();
+    localStorage.setItem('shavatz_bk',JSON.stringify(d));
+  }
+  if(!fbReady){
+    fbReady=true;
+    renderAll();
+    restoreReminders();
+  } else {
+    renderAll();
+  }
+}, err=>{ toast('⚠️ בעיית חיבור'); renderAll(); });
+
+// ══════════════════════════════════════════════
+//  CLOCK
+// ══════════════════════════════════════════════
+function tickClock(){
+  try{
+    document.getElementById('clockTxt').textContent=
+      new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
+  }catch(e){}
+}
+setInterval(tickClock,1000); tickClock();
+
+// ══════════════════════════════════════════════
+//  NOTIFICATIONS
+// ══════════════════════════════════════════════
+const pending={};
+async function reqNotif(){
+  if(!('Notification' in window)) return false;
+  if(Notification.permission==='granted') return true;
+  if(Notification.permission==='denied') return false;
+  return (await Notification.requestPermission())==='granted';
+}
+function schedNotif(sh){
+  const delay=sh.start-Date.now()-30*60*1000;
+  if(delay<-60000) return;
+  pending[sh.id]=setTimeout(()=>{
+    new Notification('🛡 שמירה בקרוב — '+sh.postName,{body:'מתחילה ב-'+ft(sh.start)+' (עוד ~30 דקות)',tag:'s'+sh.id});
+  },Math.max(0,delay));
+}
+function restoreReminders(){
+  S.schedule.forEach(sh=>{ if(S.reminders[sh.id]&&sh.start>Date.now()) schedNotif(sh); });
+}
+function toggleReminder(id){
+  const sh=S.schedule.find(x=>x.id===id);
+  if(!sh) return;
+  if(S.reminders[id]){
+    if(pending[id]){ clearTimeout(pending[id]); delete pending[id]; }
+    delete S.reminders[id];
+    toast('תזכורת בוטלה'); renderAll();
+    return;
+  }
+  reqNotif().then(ok=>{
+    if(!ok){ toast('אפשר התראות בדפדפן'); return; }
+    S.reminders[id]=true;
+    schedNotif(sh); toast('🔔 תזכורת הוגדרה'); renderAll();
+  });
+}
+
+// ══════════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════════
+function goTab(t){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.dataset.tab===t));
+  ['sched','mine','admin'].forEach(x=>document.getElementById('page-'+x).classList.toggle('active',x===t));
+  renderAll();
+}
+
+// ══════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════
+function loginAdmin(){
+  S.isAdmin=true;
+  document.getElementById('adminBtn').classList.add('on');
+  document.getElementById('adminBtn').textContent='✓ מנהל';
+  document.getElementById('adminTab').classList.remove('hidden');
+  goTab('admin');
+}
+function logoutAdmin(){
+  S.isAdmin=false;
+  document.getElementById('adminBtn').classList.remove('on');
+  document.getElementById('adminBtn').textContent='🔐 ניהול';
+  document.getElementById('adminTab').classList.add('hidden');
+  goTab('sched');
+}
+
+// ══════════════════════════════════════════════
+//  SOLDIERS & POSTS
+// ══════════════════════════════════════════════
+function addSoldier(){
+  const el=document.getElementById('newSoldier'), n=el.value.trim();
+  if(!n) return;
+  if(S.soldiers.find(s=>s.name===n)){ toast('שם זה כבר קיים'); return; }
+  S.soldiers.push({id:Date.now(),name:n});
+  el.value=''; save(); renderAdmin(); toast(n+' נוסף');
+}
+function delSoldier(id){
+  S.soldiers=S.soldiers.filter(s=>s.id!==id); save(); renderAdmin();
+}
+function addPost(){
+  const n=document.getElementById('newPostName').value.trim();
+  const h=parseFloat(document.getElementById('newPostHours').value)||1;
+  if(!n) return;
+  S.posts.push({id:Date.now(),name:n,hours:h});
+  document.getElementById('newPostName').value='';
+  document.getElementById('newPostHours').value='1';
+  save(); renderAdmin(); toast('עמדה "'+n+'" נוספה');
+}
+function delPost(id){
+  S.posts=S.posts.filter(p=>p.id!==id); save(); renderAdmin();
+}
+
+// ══════════════════════════════════════════════
+//  REMOVALS
+// ══════════════════════════════════════════════
+function addRemoval(){
+  S.removals.push({id:Date.now(),soldierName:'',from:'',to:''});
+  save(); renderRemovals();
+}
+function delRemoval(id){
+  S.removals=S.removals.filter(x=>x.id!==id); save(); renderRemovals();
+}
+
+// ══════════════════════════════════════════════
+//  SCHEDULE GENERATION
+// ══════════════════════════════════════════════
+function generateSchedule(){
+  const dtEl=document.getElementById('startDt');
+  if(!dtEl.value){ toast('בחר תאריך התחלה'); return; }
+  if(!S.soldiers.length){ toast('הוסף חיילים קודם'); return; }
+  if(!S.posts.length){ toast('הוסף עמדות קודם'); return; }
+
+  S.cfg={startDt:dtEl.value, days:parseInt(document.getElementById('schedDays').value)||7};
+  const startMs=new Date(dtEl.value).getTime();
+  const endMs=startMs+S.cfg.days*86400000;
+  const P=S.posts.length;
+
+  const rmv=S.removals.filter(r=>r.soldierName&&r.from).map(r=>({
+    name:r.soldierName,
+    from:new Date(r.from).getTime(),
+    to:r.to?new Date(r.to).getTime():Infinity
+  }));
+  const isAbsent=(name,t)=>rmv.some(r=>r.name===name&&t>=r.from&&t<r.to);
+
+  const now=Date.now();
+  const kept=S.schedule.filter(sh=>sh.end<=now);
+  const keptSlotCount=new Set(kept.map(x=>x.slotNum)).size;
+
+  let t=kept.length>0?Math.max(...kept.map(x=>x.end)):startMs;
+  let slotNum=keptSlotCount+1;
+  let slotPtr=keptSlotCount*P;
+  let rrPtr=keptSlotCount*P;
+
+  const schedule=[...kept];
+  let id=schedule.length?Math.max(...schedule.map(x=>x.id))+1:1;
+
+  while(t<endMs){
+    const available=S.soldiers.filter(s=>!isAbsent(s.name,t));
+    const M=available.length;
+    if(M===0){ t+=3600000; continue; }
+    const take=Math.min(M,P);
+    const slotSoldiers=[];
+    for(let j=0;j<take;j++) slotSoldiers.push(available[(rrPtr+j)%M]);
+    const basePostIdx=slotPtr%P;
+    slotSoldiers.forEach((soldier,j)=>{
+      const postIdx=(basePostIdx+j)%P;
+      const post=S.posts[postIdx];
+      schedule.push({id:id++,slotNum,soldierName:soldier.name,postName:post.name,postIdx,start:t,end:t+post.hours*3600000});
+    });
+    rrPtr+=take;
+    slotPtr+=P;
+    t+=Math.max(...S.posts.map(p=>p.hours))*3600000;
+    slotNum++;
+  }
+
+  S.schedule=schedule;
+  save(); renderAll();
+  document.getElementById('regenWrap').classList.remove('hidden');
+  goTab('sched');
+  toast('לוח שמירות נוצר! 🎉');
+}
+
+// ══════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════
+function renderAll(){
+  const active=['sched','mine','admin'].find(t=>document.getElementById('page-'+t).classList.contains('active'))||'sched';
+  if(active==='sched') renderSched();
+  else if(active==='mine'){ if(S.selSoldier) showDetail(S.selSoldier); else renderMine(); }
+  else if(active==='admin') renderAdmin();
+}
+
+function renderSched(){
+  const empty=document.getElementById('sched-empty');
+  const content=document.getElementById('sched-content');
+  if(!S.schedule.length){
+    empty.classList.remove('hidden'); content.classList.add('hidden');
+    if(fbReady) empty.innerHTML='<div class="empty-icon">📋</div><p>אין לוח שמירות עדיין.<br>המנהל צריך להגדיר חיילים, עמדות ולייצר לוח.</p>';
+    return;
+  }
+  empty.classList.add('hidden'); content.classList.remove('hidden');
+  document.getElementById('statsBar').innerHTML=`
+    <div class="stat"><div class="stat-val">${S.soldiers.length}</div><div class="stat-lbl">חיילים</div></div>
+    <div class="stat"><div class="stat-val">${S.posts.length}</div><div class="stat-lbl">עמדות</div></div>
+    <div class="stat"><div class="stat-val">${new Set(S.schedule.map(x=>x.slotNum)).size}</div><div class="stat-lbl">סלוטים</div></div>`;
+  document.getElementById('ratioBarWrap').innerHTML=ratioHTML();
+  const now=Date.now();
+  let lastSlot=-1;
+  document.getElementById('schedBody').innerHTML=S.schedule.map(sh=>{
+    const isNow=now>=sh.start&&now<sh.end;
+    const sep=sh.slotNum!==lastSlot&&lastSlot!==-1;
+    lastSlot=sh.slotNum;
+    return `<tr class="${isNow?'now-row':''}${sep?' slot-sep':''}">
+      <td class="dim mono small">${sh.slotNum}</td>
+      <td class="bold">${sh.soldierName}</td>
+      <td><span class="badge bc${sh.postIdx%6}">${sh.postName}</span></td>
+      <td class="mono small">${fdt(sh.start)}</td>
+      <td class="mono small">${fdt(sh.end)}</td>
+      <td class="dim small">${(sh.end-sh.start)/3600000}ש'</td>
+    </tr>`;
+  }).join('');
+  if(S.cfg.startDt){
+    const e=new Date(new Date(S.cfg.startDt).getTime()+S.cfg.days*86400000);
+    document.getElementById('schedRange').textContent=fd(new Date(S.cfg.startDt))+' ← '+fd(e);
+  }
+}
+
+function ratioHTML(){
+  const N=S.soldiers.length,P=S.posts.length;
+  if(!N||!P) return '';
+  const avgH=S.posts.reduce((s,p)=>s+p.hours,0)/P;
+  const spc=Math.ceil(N/P);
+  const guardH=avgH, restH=avgH*(spc-1), total=guardH+restH;
+  const pct=Math.round(guardH/total*100);
+  return `<div class="ratio-bar">
+    <div class="ratio-title">⚖️ יחס שמירה / מנוחה — ממוצע לחייל</div>
+    <div class="ratio-track"><div class="ratio-fill" style="width:${pct}%"></div></div>
+    <div class="ratio-labels">
+      <span style="color:var(--g)">🛡 שמירה: ${+guardH.toFixed(1)}ש'</span>
+      <span style="color:var(--dim)">${pct}% מהזמן</span>
+      <span style="color:var(--dim)">😴 מנוחה: ${+restH.toFixed(1)}ש'</span>
+    </div>
+  </div>`;
+}
+
+function renderMine(){
+  const has=S.schedule.length>0&&S.soldiers.length>0;
+  document.getElementById('mine-empty').classList.toggle('hidden',has||!fbReady);
+  if(!has){ document.getElementById('mine-picker').classList.add('hidden'); document.getElementById('mine-detail').classList.add('hidden'); return; }
+  document.getElementById('mine-picker').classList.remove('hidden');
+  document.getElementById('mine-detail').classList.add('hidden');
+  document.getElementById('pickerGrid').innerHTML=S.soldiers.map(s=>`
+    <div class="pick-card" data-name="${esc(s.name)}">
+      <div class="pick-avatar">${s.name[0]}</div>
+      <div class="pick-name">${s.name}</div>
+    </div>`).join('');
+  document.querySelectorAll('.pick-card').forEach(el=>{
+    el.addEventListener('click',()=>{ S.selSoldier=el.dataset.name; showDetail(S.selSoldier); });
+  });
+}
+
+function showDetail(name){
+  document.getElementById('mine-picker').classList.add('hidden');
+  document.getElementById('mine-detail').classList.remove('hidden');
+  const shifts=S.schedule.filter(sh=>sh.soldierName===name);
+  const now=Date.now();
+  document.getElementById('detailName').textContent=name;
+  document.getElementById('detailStats').textContent=`${shifts.length} שמירות · ${shifts.reduce((s,sh)=>s+(sh.end-sh.start)/3600000,0)} שעות`;
+  const active=shifts.find(sh=>now>=sh.start&&now<sh.end);
+  const next=shifts.find(sh=>sh.start>now);
+  const feat=active||next;
+  document.getElementById('detailNextBanner').innerHTML=feat?`
+    <div class="next-banner"><div class="nb-icon">${active?'🔴':'⏰'}</div>
+    <div><div class="nb-label">${active?'שמירה פעילה עכשיו':'השמירה הבאה שלך'}</div>
+    <div class="nb-val">${feat.postName} · ${fdt(feat.start)}</div></div></div>`:'';
+  document.getElementById('detailRatio').innerHTML=ratioHTML();
+  document.getElementById('detailList').innerHTML=shifts.map(sh=>{
+    const isNow=now>=sh.start&&now<sh.end;
+    const isPast=now>=sh.end;
+    const dur=(sh.end-sh.start)/3600000;
+    const hasR=!!S.reminders[sh.id];
+    const canR=!isPast&&!isNow;
+    return `<div class="shift-card ${isNow?'now-card':!isPast?'upcoming':''}">
+      <div class="shift-time"><div class="t">${ft(sh.start)}</div><div class="d">${fday(sh.start)}</div></div>
+      <div class="vline"></div>
+      <div class="shift-info">
+        <div class="pname"><span class="badge bc${sh.postIdx%6}">${sh.postName}</span></div>
+        <div class="pdur">${ft(sh.start)}–${ft(sh.end)} · ${dur}ש'</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+        <div class="shift-status ${isNow?'st-now':!isPast?'st-next':'st-done'}">${isNow?'🔴 עכשיו':!isPast?'⏰ קרוב':'✓ הסתיים'}</div>
+        ${canR?`<button class="notif-btn ${hasR?'on':''}" data-sid="${sh.id}">${hasR?'🔔 ביטול':'🔔 תזכורת'}</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.notif-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>toggleReminder(parseInt(btn.dataset.sid)));
+  });
+}
+
+function renderAdmin(){
+  document.getElementById('soldierCount').textContent=S.soldiers.length+' חיילים';
+  document.getElementById('soldierList').innerHTML=S.soldiers.length
+    ?S.soldiers.map((s,i)=>`<div class="chip">
+        <div class="chip-left"><div class="chip-num">${i+1}</div><div class="chip-name">${s.name}</div></div>
+        <button class="btn btn-red btn-sm del-soldier" data-id="${s.id}">✕</button></div>`).join('')
+    :'<div class="empty" style="padding:14px"><p>אין חיילים</p></div>';
+  document.querySelectorAll('.del-soldier').forEach(btn=>btn.addEventListener('click',()=>delSoldier(parseInt(btn.dataset.id))));
+
+  document.getElementById('postCount').textContent=S.posts.length+' עמדות';
+  document.getElementById('postList').innerHTML=S.posts.length
+    ?S.posts.map((p,i)=>`<div class="chip">
+        <div class="chip-left"><span class="badge bc${i%6}">${p.name}</span><span class="dim small"> ${p.hours}ש'</span></div>
+        <button class="btn btn-red btn-sm del-post" data-id="${p.id}">✕</button></div>`).join('')
+    :'<div class="empty" style="padding:14px"><p>אין עמדות</p></div>';
+  document.querySelectorAll('.del-post').forEach(btn=>btn.addEventListener('click',()=>delPost(parseInt(btn.dataset.id))));
+
+  if(S.cfg.startDt) document.getElementById('startDt').value=S.cfg.startDt;
+  else{ const d=new Date();d.setMinutes(0,0,0);document.getElementById('startDt').value=d.toISOString().slice(0,16); }
+  document.getElementById('schedDays').value=S.cfg.days;
+  if(S.schedule.length) document.getElementById('regenWrap').classList.remove('hidden');
+  renderRemovals();
+}
+
+function renderRemovals(){
+  const el=document.getElementById('removalList');
+  if(!S.removals.length){ el.innerHTML='<div class="empty" style="padding:10px"><p>אין הורדות מוגדרות</p></div>'; return; }
+  el.innerHTML=S.removals.map(r=>`
+    <div class="rm-row">
+      <div class="rm-field"><div class="lbl">חייל</div>
+        <select data-rid="${r.id}" data-field="soldierName">
+          <option value="">בחר...</option>
+          ${S.soldiers.map(s=>`<option value="${esc(s.name)}" ${r.soldierName===s.name?'selected':''}>${s.name}</option>`).join('')}
+        </select>
+      </div>
+      <div class="rm-field"><div class="lbl">מתאריך</div>
+        <input type="datetime-local" value="${r.from}" data-rid="${r.id}" data-field="from">
+      </div>
+      <div class="rm-field"><div class="lbl">עד (ריק=לא חוזר)</div>
+        <input type="datetime-local" value="${r.to}" data-rid="${r.id}" data-field="to">
+      </div>
+      <button class="btn btn-red btn-sm del-removal" data-id="${r.id}" style="align-self:flex-end">✕</button>
+    </div>`).join('');
+  document.querySelectorAll('[data-rid]').forEach(el=>{
+    el.addEventListener('change',()=>{
+      const r=S.removals.find(x=>x.id===parseInt(el.dataset.rid));
+      if(r){ r[el.dataset.field]=el.value; save(); }
+    });
+  });
+  document.querySelectorAll('.del-removal').forEach(btn=>btn.addEventListener('click',()=>delRemoval(parseInt(btn.dataset.id))));
+}
+
+// ══════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════
+const HE=['א','ב','ג','ד','ה','ו','ש'];
+const pz=n=>String(n).padStart(2,'0');
+const ft=ms=>{const d=new Date(ms);return pz(d.getHours())+':'+pz(d.getMinutes());};
+const fd=d=>d.getDate()+'/'+(d.getMonth()+1)+'/'+d.getFullYear();
+const fdt=ms=>{const d=new Date(ms);return HE[d.getDay()]+"' "+d.getDate()+'/'+(d.getMonth()+1)+' '+pz(d.getHours())+':'+pz(d.getMinutes());};
+const fday=ms=>{const d=new Date(ms);return HE[d.getDay()]+"' "+d.getDate()+'/'+(d.getMonth()+1);};
+const esc=s=>s.replace(/"/g,'&quot;');
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2600);}
+
+// ══════════════════════════════════════════════
+//  EVENT LISTENERS (אין onclick ב-HTML!)
+// ══════════════════════════════════════════════
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    if(tab.dataset.tab==='admin'&&!S.isAdmin) return;
+    goTab(tab.dataset.tab);
+  });
+});
+
+document.getElementById('adminBtn').addEventListener('click',()=>{
+  if(S.isAdmin){ logoutAdmin(); return; }
+  document.getElementById('pwInput').value='';
+  document.getElementById('pwErr').classList.add('hidden');
+  document.getElementById('modalLogin').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('pwInput').focus(),100);
+});
+
+document.getElementById('confirmLoginBtn').addEventListener('click',()=>{
+  if(document.getElementById('pwInput').value===PW){ loginAdmin(); document.getElementById('modalLogin').classList.add('hidden'); }
+  else document.getElementById('pwErr').classList.remove('hidden');
+});
+document.getElementById('pwInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter') document.getElementById('confirmLoginBtn').click();
+});
+document.getElementById('cancelLoginBtn').addEventListener('click',()=>document.getElementById('modalLogin').classList.add('hidden'));
+
+document.getElementById('addSoldierBtn').addEventListener('click',addSoldier);
+document.getElementById('newSoldier').addEventListener('keydown',e=>{ if(e.key==='Enter') addSoldier(); });
+document.getElementById('addPostBtn').addEventListener('click',addPost);
+document.getElementById('newPostName').addEventListener('keydown',e=>{ if(e.key==='Enter') addPost(); });
+document.getElementById('generateBtn').addEventListener('click',generateSchedule);
+document.getElementById('regenBtn').addEventListener('click',generateSchedule);
+document.getElementById('addRemovalBtn').addEventListener('click',addRemoval);
+document.getElementById('backBtn').addEventListener('click',()=>{ S.selSoldier=null; document.getElementById('mine-detail').classList.add('hidden'); renderMine(); });
+
+</script>
+</body>
+</html>
